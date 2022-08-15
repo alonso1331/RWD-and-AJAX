@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+    <style>
+    	@media screen and (max-width: 992px){
+    		.table-rwd thead{
+    			display: none;
+    		}
+    		.table-rwd tbody tr{
+    			display: block;
+    			border: 3px solid #CCC;
+    			margin-top: 15px
+    		}
+    		.table-rwd tbody tr td{
+    			display: block;
+    		}
+    		.table-rwd tbody tr td:before{
+    			content: attr(data-th) " : ";
+    			color:  #642be0;
+    			font-weight: bolder;
+    			/*font-size: 20px;*/
+    		}
+    		/*td:before before前不能空白 錯誤範例：td:before*/
+    	}
+    </style>
+
+    <title>來到農村住一晚：RDW+ajax opendata串接</title>
+  </head>
+  <body>
+    <div class="container">
+    	<div class="row">
+    		<div class="col-10 offset-1">
+    			<table class="table table-striped table-hover table-bordered table-sm table-rwd">
+    				<thead class="thead-dark">
+    					<tr>
+    						<th>名稱</th>
+							<th>地址</th>
+							<th>電話</th>
+							<th>簡介</th>
+							<th>信用卡</th>
+    					</tr>
+    				</thead>
+    				<tbody id="mytable">
+    					<tr>
+	   						<td data-th="名稱">走馬瀨休閒農場</td>
+	   						<td data-th="地址">台南市大內區二溪里唭子瓦 60 號</td>
+	   						<td data-th="電話">06-5760121~3</td>
+	   						<td data-th="簡介">走馬瀨農場以「草」起家，結合田媽媽轉型輔導，提供注重樂活的</td>
+	   						<td data-th="信用卡" class="table-success">可使用</td>
+	   					</tr>
+    				</tbody>
+    			</table>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+
+    <script>
+    	$(function(){
+    		$.ajax({
+    			type: "GET",
+    			url: "https://data.coa.gov.tw/Service/OpenData/ODwsv/ODwsvTravelStay.aspx",
+    			success: showdata,
+    			error: function(){
+    				alert("https://data.coa.gov.tw/Service/OpenData/ODwsv/ODwsvTravelStay.aspx")
+    			}
+    		});
+    	});
+    	function showdata(data){
+    		console.log(data);
+    		$("#mytable").empty();
+    		for(var i=0; i<data.length; i++){
+    			if(data[i].CreditCard == "True"){
+    				var strHTML = '<tr><td data-th="名稱">' + data[i].Name + '</td><td data-th="地址">' + data[i].Address + '</td><td data-th="電話">' + data[i].Tel + '</td><td data-th="簡介">'+ data[i].HostWords.substring(0, 50) + '</td><td data-th="信用卡" class="table-success">是</td></tr>';
+    			}else{
+    				var strHTML = '<tr><td data-th="名稱">' + data[i].Name + '</td><td data-th="地址">' + data[i].Address + '</td><td data-th="電話">' + data[i].Tel + '</td><td data-th="簡介">'+ data[i].HostWords.substring(0, 50) + '</td><td data-th="信用卡" class="table-danger">否</td></tr>';
+    			}
+    			
+    			$("#mytable").append(strHTML);
+    		}
+    	}
+    </script>
+
+  </body>
+</html>
